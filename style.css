@@ -1,91 +1,132 @@
 @charset "UTF-8";
-@import url('https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+/* Google Fonts loaded via <link> in HTML for better performance */
 
-:root{
+/* ─── Design Tokens ─────────────────────────────────────────────────────── */
+:root {
     --size: max(5px, 1vmin);
-    --heght: 80em;
+    --height: 80em;
     --pad: 1.25em;
-    --border-radius:6.6666em;
-    --gutter:calc(var(--pad)*2);
-    --button-width:0.333em;
-    --notch-height:3.33em;
-    --notch-width:33.3%;
-    --notch-radius: calc(var(--border-radius) -calc(var(--pad) * 2));
-    --notch-duration: 0.333s;
+    --border-radius: 6.6666em;
+    --gutter: calc(var(--pad) * 2);
+    --button-width: 0.333em;
+    --notch-height: 3.33em;
+    --notch-width: 33.3%;
+    --notch-radius: calc(var(--border-radius) - calc(var(--pad) * 2));
+    --notch-duration: 0.4s;
     --ease: cubic-bezier(.666, 0, .4, 1);
-    --ease-spring: cubic-bezier(.666, 0 , .4 , 1.2);
+    --ease-spring: cubic-bezier(.666, 0, .4, 1.2);
     --ease-out: cubic-bezier(.15, 0, .333, 1);
     --border-width: 0.4em;
+
+    /* Theme hue values */
     --deep-purple: 284;
-    --gold: 30;
+    --gold: 38;
     --space-black: 215;
     --silver: 254;
+
+    /* Active colour channel (defaults to deep-purple) */
     --c-h: var(--deep-purple);
     --c-s: 100%;
     --c-l: 50%;
 }
 
-@-webkit-keyframes appear{
-    to{
+/* ─── Reset ─────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+/* ─── Screen-reader only utility ─────────────────────────────────────────── */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* ─── Keyframes ──────────────────────────────────────────────────────────── */
+@keyframes appear {
+    to {
         transform: scale3d(1, 1, 1);
         opacity: 1;
     }
 }
 
-@keyframes appear{
-    to{
-        transform: scale3d(1, 1, 1);
-        opacity: 1;  
-    }
+/* Subtle ambient pulsing on active theme sections */
+@keyframes ambientPulse {
+    from { transform: scale3d(1,    1.05, 1) translate3d(0, -1%, 0); }
+    to   { transform: scale3d(1.08, 1.15, 1) translate3d(2%, 3%, 0); }
 }
 
-body{
+/* ─── Page ───────────────────────────────────────────────────────────────── */
+body {
     background: #00000a;
     display: flex;
     flex-direction: column;
     gap: 3em;
     align-items: center;
     justify-content: center;
-    min-height: 100vh ;
-    font-family: 'Inter';
+    min-height: 100vh;
+    font-family: 'Inter', 'PT Sans', sans-serif;
     font-size: var(--size);
+    /* Subtle star-field background */
+    background-image:
+        radial-gradient(1px 1px at 20%  30%, rgba(255,255,255,0.35) 0%, transparent 100%),
+        radial-gradient(1px 1px at 60%  15%, rgba(255,255,255,0.25) 0%, transparent 100%),
+        radial-gradient(1px 1px at 80%  70%, rgba(255,255,255,0.2)  0%, transparent 100%),
+        radial-gradient(1px 1px at 40%  80%, rgba(255,255,255,0.15) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90%  40%, rgba(255,255,255,0.3)  0%, transparent 100%);
 }
 
-.phone{
-    position: left;
+/* ─── Phone Shell ────────────────────────────────────────────────────────── */
+.phone {
+    position: relative;
     z-index: 1;
-    aspect-ratio: 37/76;
+    aspect-ratio: 37 / 76;
     background: black;
-    height: var(--heght);
+    height: var(--height);
     border-radius: var(--border-radius);
-    box-shadow: 0 0 0.1em 0.25em hsl(var(--c-h), 20%, 25%), 0 0 0 var(--border-width) hsl(var(--c-h), 30%, 85%);
-    box-sizing: border-box;
+    box-shadow:
+        0 0 0.1em 0.25em hsl(var(--c-h), 20%, 25%),
+        0 0 0 var(--border-width) hsl(var(--c-h), 30%, 85%),
+        0 2em 6em rgba(0, 0, 0, 0.7);
     opacity: 0;
-    transform: scale3d(1.1, 1.1, 1);
-    -webkit-animation: appear 1s var(--ease-out) forwards;
+    transform: scale3d(1.05, 1.05, 1);
     animation: appear 1s var(--ease-out) forwards;
-    --webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    transition: box-shadow 0.8s var(--ease-out);
 }
 
-.phone::before{
-    content:"";
+/* Side-rail highlight seam */
+.phone::before {
+    content: "";
     position: absolute;
     top: var(--border-radius);
     right: calc(var(--border-width) * -1);
-    bottom: calc(var(--border-radius));
+    bottom: var(--border-radius);
     left: calc(var(--border-width) * -1);
     border: 0.5em solid hsl(var(--c-h), 20%, 30%);
     border-left-width: 0;
     border-right-width: 0;
+    pointer-events: none;
+    transition: border-color 0.8s var(--ease-out);
 }
 
-.buttons{
+/* ─── Physical Buttons ───────────────────────────────────────────────────── */
+.buttons {
     position: absolute;
     inset: calc(var(--border-width) * -1);
     pointer-events: none;
 }
 
-.buttons .left, .buttons .right{
+.buttons .left,
+.buttons .right {
     position: absolute;
     width: var(--border-width);
     display: flex;
@@ -94,35 +135,43 @@ body{
     gap: 1.5em;
 }
 
-.buttons .left{
+.buttons .left {
     right: 100%;
     top: calc(var(--border-radius) * 2);
 }
 
-.buttons .left .buttons:nth-child(1){
+.buttons .left .button:first-child {
     height: 3em;
     margin-bottom: 0.5em;
 }
 
-.buttons .right{
-    left:100%;
+.buttons .right {
+    left: 100%;
     transform: scale3d(-1, 1, 1);
     top: calc(var(--border-radius) * 3);
 }
 
-.buttons .right .button{
-    height:9.5em;
+.buttons .right .button {
+    height: 9.5em;
 }
 
-.buttons .button{
-    background: hsl(var(--c-h), 20%, 95%);
+.buttons .button {
+    background: hsl(var(--c-h), 20%, 92%);
     height: 6em;
-    box-shadow: inset -0.15em 0 0.1em black, inset 0 0 0.1em hsl(var(--c-h), 30%, 90%), inset 0 0.2em 0.1em hsl(var(--c-h), 30%, 90%), inset 0 -0.2em 0.1em hsl(var(--c-h), 30%, 90%), inset -0.1em 0.333em 0.1em rgba(0, 0, 0, 0.5), inset -0.1em -0.333em 0.1em rgba(0, 0, 0, 0.5);
+    box-shadow:
+        inset -0.15em 0 0.1em black,
+        inset 0 0 0.1em hsl(var(--c-h), 30%, 90%),
+        inset 0 0.2em 0.1em hsl(var(--c-h), 30%, 90%),
+        inset 0 -0.2em 0.1em hsl(var(--c-h), 30%, 90%),
+        inset -0.1em 0.333em 0.1em rgba(0, 0, 0, 0.5),
+        inset -0.1em -0.333em 0.1em rgba(0, 0, 0, 0.5);
     border-top-left-radius: 0.2em;
     border-bottom-left-radius: 0.2em;
+    transition: background 0.8s var(--ease-out);
 }
 
-.screen-container{
+/* ─── Screen Container ───────────────────────────────────────────────────── */
+.screen-container {
     position: absolute;
     inset: 0;
     border-radius: var(--border-radius);
@@ -130,22 +179,25 @@ body{
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: calc(var(--pad));
+    gap: var(--pad);
 }
 
-.screen-container::before{
+/* Home indicator bar */
+.screen-container::before {
     content: "";
     position: absolute;
     z-index: 2;
     background: white;
-    width:36.6%;
+    width: 36.6%;
     bottom: calc(var(--pad) * 0.75);
     height: calc(var(--pad) * 0.5);
     border-radius: calc(var(--pad) * 0.25);
-    filter: drop-shadow(0 0.1em 0.25em rgba(0 0 0 0.1));
+    opacity: 0.6;
+    filter: drop-shadow(0 0.1em 0.25em rgba(0, 0, 0, 0.1));
 }
 
-.bg{
+/* ─── Background Gradient Layers ─────────────────────────────────────────── */
+.bg {
     position: absolute;
     inset: 0;
     background: black;
@@ -153,7 +205,8 @@ body{
     overflow: hidden;
 }
 
-.bg>*{
+/* Every theme layer is stacked and hidden by default */
+.bg > * {
     position: absolute;
     inset: 0;
     display: flex;
@@ -162,62 +215,66 @@ body{
     transition: opacity 1s var(--ease-out) 0.5s;
 }
 
-.bg .section{
-    --g-h: var(--c-h);
-    --g-s: var(--g-s);
-    --g-l: var(--g-l);
+.bg .section {
     flex-grow: 1;
     position: relative;
     overflow: hidden;
-    border-radius: calc(var(--border-radius) var(--pad));
     border-bottom-left-radius: 20em;
-    border-bottom-right-radius: 20em ;
+    border-bottom-right-radius: 20em;
 }
 
-.bg .section:before{
+.bg .section::before {
     content: "";
     position: absolute;
     inset: 0;
     border-radius: inherit;
-    background: radial-gradient(85% 125% at 50% 140%, black 66.6%, transparent), radial-gradient(120% 120% at 50% 145%, hsl(calc(var(--g-h) - 45), 100%, 50%) 50%, transparent), radial-gradient(150% 100% at 50% 80%, transparent 35%, hsl(calc(var(--g-h) + 50), 100%, 99%));
-    background-color: hsl(calc(var(--g-h) , var(--g-s) , var(--g-l)));
-    transform: scale3d(1.1 , 1.25 , 1);
+    background:
+        radial-gradient(85% 125% at 50% 140%, black 66.6%, transparent),
+        radial-gradient(120% 120% at 50% 145%, hsl(calc(var(--g-h) - 45), 100%, 50%) 50%, transparent),
+        radial-gradient(150% 100% at 50% 80%, transparent 35%, hsl(calc(var(--g-h) + 50), 100%, 99%));
+    background-color: hsl(var(--g-h), var(--g-s, 80%), var(--g-l, 30%));
+    transform: scale3d(1.1, 1.25, 1);
     transform-origin: bottom;
     transition: transform 1s var(--ease-out) 0.5s;
 }
 
-.bg .section:after{
+.bg .section::after {
     content: "";
     position: absolute;
     inset: 0;
-    border: var(--border-width) solid rgba(255 ,255 ,255 ,0.8);
+    border: var(--border-width) solid rgba(255, 255, 255, 0.8);
     border-radius: inherit;
     filter: blur(0.5em);
-    -webkit-mask-image: radial-gradient(100% 100% at 50% 70% , black 30% , transparent 50%);
-    mask-image:radial-gradient(100% 100% at 50% 70% , black 30% , transparent 50%); 
-}    
+    -webkit-mask-image: radial-gradient(100% 100% at 50% 70%, black 30%, transparent 50%);
+    mask-image: radial-gradient(100% 100% at 50% 70%, black 30%, transparent 50%);
+}
 
-.bg .section .glow{
+.bg .section .glow {
     position: absolute;
     inset: 0;
     border-radius: inherit;
     mix-blend-mode: overlay;
     z-index: 1;
-    background: radial-gradient(80% 150% at 50% 100% hsl(var(--g-h), 100%, var(--g-l), transparent 70%));
+    background: radial-gradient(80% 150% at 50% 100%, hsl(var(--g-h, 284), 100%, var(--g-l, 50%)), transparent 70%);
 }
 
-.bg .section:last-of-type{
+/* Inverted/bottom section */
+.bg .section:last-of-type {
     --g-h: calc(var(--c-h) - var(--g-hue-adjust, 0));
     --g-s: calc(var(--c-s) - 25%);
     --g-l: calc(var(--c-l) + 20%);
-    transform: scale3d(1, -1 ,1), translateZ(1px); 
+    transform: scale3d(1, -1, 1) translateZ(1px);
 }
 
-.bg .section:last-of-type::before{
-    background: radial-gradient(85% 125% at 50% 140%, black 66.6%, transparent), radial-gradient(120% 120% at 50% 145%, hsl(calc(var(--g-h) - var(--g-hue-adjust-2, var(--g-hue-adjust, 0))), 100%, 50%) 50%, transparent), radial-gradient(150% 100% at 50% 95%, transparent 15%, hsl(calc(var(--g-h) + 5), 100%, var(--g-lightness, 100%)));
-    background-color: hsl(calc(var(--g-h) , var(--g-s) , var(--g-l)));
+.bg .section:last-of-type::before {
+    background:
+        radial-gradient(85% 125% at 50% 140%, black 66.6%, transparent),
+        radial-gradient(120% 120% at 50% 145%, hsl(calc(var(--g-h) - var(--g-hue-adjust-2, var(--g-hue-adjust, 0))), 100%, 50%) 50%, transparent),
+        radial-gradient(150% 100% at 50% 95%, transparent 15%, hsl(calc(var(--g-h) + 5), 100%, var(--g-lightness, 100%)));
+    background-color: hsl(var(--g-h), var(--g-s, 80%), var(--g-l, 30%));
 }
 
+/* ─── Dynamic Island / Notch ─────────────────────────────────────────────── */
 .notch-container {
     position: absolute;
     z-index: 3;
@@ -229,36 +286,37 @@ body{
     height: 100%;
     max-height: calc(var(--notch-radius) * 2);
     pointer-events: none;
-    outline: none; 
-    transition: var(--notch-duration) var(--ease);
-    transition-property: max-height, max-width, filter, transform;
     outline: none;
+    transition:
+        max-height var(--notch-duration) var(--ease),
+        max-width var(--notch-duration) var(--ease),
+        filter var(--notch-duration) var(--ease),
+        transform var(--notch-duration) var(--ease);
     will-change: max-width, max-height, filter;
 }
 
-.notch-container:hover, .notch-container:focus-within {
-    --shadow-opacity: 0.5s;
+.notch-container:hover,
+.notch-container:focus-within {
+    --shadow-opacity: 0.5;
     transition-timing-function: var(--ease-spring);
 }
 
-.notch-container:hover .content, .notch-container:focus-within .content {
+.notch-container:hover .content,
+.notch-container:focus-within .content {
     --content-padding: 2em;
 }
 
-.notch-container:hover .content .text, .notch-container:focus-within .content .text {
+.notch-container:hover .content .text,
+.notch-container:focus-within .content .text {
     opacity: 1;
 }
 
-.notch-container:hover .notch, .notch-container:focus-within .notch {
+.notch-container:hover .notch,
+.notch-container:focus-within .notch {
     max-width: 100%;
     max-height: 100%;
     pointer-events: all;
     transform: scale3d(1, 1, 1);
-}
-
-.notch-container:hover~.notch-blur, .notch-container:focus-within ~.notch-blur {
-    opacity: 1;
-    max-height: calc(var(--notch-radius) * 2.75 + var(--pad));
 }
 
 .notch-container:focus-within {
@@ -267,36 +325,43 @@ body{
     --bar-opacity: 1;
 }
 
-.notch-container:focus-within .left, .notch-container:focus-within .right {
+.notch-container:focus-within .left,
+.notch-container:focus-within .right {
     max-height: calc(100% - var(--bar-height, 0%) - var(--content-gap));
 }
 
-.notch-container:focus-within~.notch-blur {
-    max-height: calc(var(--notch-radius) * 5);
-    opacity: 1;
-}
-
+/* Backdrop blur overlay that follows the expanded notch */
 .notch-blur {
     position: absolute;
     z-index: 2;
     top: calc(var(--pad) - 3px);
-    right: calc(var(--pad) - 3px); 
+    right: calc(var(--pad) - 3px);
     left: calc(var(--pad) - 3px);
     height: 100%;
     max-height: calc(var(--notch-radius) * 1.5);
     -webkit-backdrop-filter: blur(0.2em);
     backdrop-filter: blur(0.2em);
-    fill: blur(0.1em);
     -webkit-mask-image: linear-gradient(to bottom, black calc(100% - var(--notch-radius)), transparent);
-    mask-image: linear-gradient(to bottom, black calc(100% - var(--notch-radius)) transparent); 
+    mask-image: linear-gradient(to bottom, black calc(100% - var(--notch-radius)), transparent);
     opacity: 0;
-    transition: var(--notch-duration) ease-in-out;
     border-radius: calc(var(--border-radius) - var(--pad));
-    transition: var(--notch-duration) var(ease);
-    transition-property: max-height, max-width, filter, transform;
-    will-change: max-width, max-height, filter;
+    transition:
+        max-height var(--notch-duration) var(--ease),
+        opacity var(--notch-duration) ease-in-out;
+    will-change: max-width, max-height;
 }
 
+.notch-container:hover ~ .notch-blur,
+.notch-container:focus-within ~ .notch-blur {
+    opacity: 1;
+    max-height: calc(var(--notch-radius) * 2.75 + var(--pad));
+}
+
+.notch-container:focus-within ~ .notch-blur {
+    max-height: calc(var(--notch-radius) * 5);
+}
+
+/* The pill/island itself */
 .notch {
     position: absolute;
     background: black;
@@ -310,11 +375,12 @@ body{
     transition: inherit;
     transition-property: inherit;
     will-change: inherit;
-    filter: drop-shadow(0 1em 2em hsla(0 0% 0%/var(--shadow-opacity, 0)));
+    filter: drop-shadow(0 1em 2em hsla(0, 0%, 0%, var(--shadow-opacity, 0)));
     transform: scale3d(0.375, 0.4, 1);
     transform-origin: top;
 }
 
+/* ─── Notch Content ──────────────────────────────────────────────────────── */
 .content {
     --content-padding: 1.75em;
     --duration-height: 0.5em;
@@ -327,24 +393,23 @@ body{
     padding: var(--content-padding);
     gap: var(--content-gap);
     font-size: 125%;
-    transition-property: padding;
+    transition: padding var(--notch-duration) var(--ease-out);
     will-change: padding;
 }
 
-.content .left .content .right {
+.content .left,
+.content .right {
     height: 100%;
     max-height: calc(100% - var(--bar-height, 0%));
     display: flex;
     align-items: center;
     gap: 1em;
+    transition: max-height var(--notch-duration) var(--ease-out), opacity var(--notch-duration) var(--ease-out);
+    will-change: max-height;
 }
 
-.content, .content .left, .content .right, .content .bar, .content .text {
-    transition: var(--notch-duration) --ease-out;
-}
-
-.content .left, .content .right, .content .bar {
-    transition-property: max-height, opacity;
+.content .bar {
+    transition: max-height var(--notch-duration) var(--ease-out), opacity var(--notch-duration) var(--ease-out);
     will-change: max-height;
 }
 
@@ -352,297 +417,316 @@ body{
     flex-grow: 2;
 }
 
+/* Song info text */
 .content .text {
     display: flex;
     flex-direction: column;
     gap: 0.333em;
-    transition-property: opacity;
     opacity: var(--bar-opacity, 0);
+    transition: opacity var(--notch-duration) var(--ease-out);
 }
 
-.content .text:before {
-    content: " "; 
-    order: 1;
-    text-transform: uppercase;
+.content .text .song-name {
+    font-size: 1em;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.content .text:after {
-    order: 2;
-    content: "Music Name"; 
-    opacity: 0.5;
+.content .text .artist-name {
+    font-size: 0.85em;
+    opacity: 0.55;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .content .right {
     flex-grow: 1;
+    justify-content: flex-end;
 }
 
-.content .title{
+/* Album art thumbnail */
+.content .title {
     background: #1a1ab3;
     height: 100%;
     aspect-ratio: 1;
     border-radius: 33.3%;
-    position: absolute ;
+    position: relative;
+    flex-shrink: 0;
+    overflow: hidden;
 }
-.content .title:before{
+
+.content .title::before {
     content: "";
     position: absolute;
     inset: 0;
-    border-radius: 50%;
-    background: radial-gradient(50% 50% at 55% 40% #131486 , #cd1385 15%, transparent) center/133.3% 133.3%;
-    background-color: rgb(38, 0, 255);
-    background-color: black;
+    border-radius: inherit;
+    background:
+        radial-gradient(50% 50% at 55% 40%, #131486, #cd1385 15%, transparent);
+    background-color: #1a0066;
     filter: blur(0.05em);
 }
 
-.content .bar{
+/* Small music note icon using CSS */
+.content .title::after {
+    content: "♫";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8em;
+    opacity: 0.8;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 0 0.5em rgba(200, 0, 255, 0.6);
+}
+
+/* Progress bar row */
+.content .bar {
     display: flex;
     align-items: center;
     gap: 1em;
     flex-basis: 100%;
     max-height: var(--bar-height, 0%);
-    color: rgba(255 , 255 , 255 , 0.5);
+    color: rgba(255, 255, 255, 0.5);
     opacity: var(--bar-opacity, 0);
+    font-size: 0.8em;
+    font-variant-numeric: tabular-nums;
+    overflow: hidden;
 }
 
-.content .bar .duration{
+.content .bar .duration {
     position: relative;
     height: var(--duration-height);
-    background: rgba(255 , 255 , 255 , 0.25);
-    border-radius: calc(var(--duration-height) * 0.5 );
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: calc(var(--duration-height) * 0.5);
     overflow: hidden;
     flex-grow: 1;
 }
 
-.content .bar .duration::before{
+.content .bar .duration::before {
     content: "";
-    height:100%;
+    height: 100%;
     background: white;
-    width: 25%;
+    width: 35%;
     position: absolute;
+    border-radius: inherit;
 }
 
-.content .bar::before{
+.content .bar::before {
     content: "1:20";
+    white-space: nowrap;
 }
 
-.content .bar::after{
-    content: "-1.48";
+.content .bar::after {
+    content: "-1:48";
+    white-space: nowrap;
 }
 
-.camera{
+/* ─── Front Camera ───────────────────────────────────────────────────────── */
+.camera {
     display: flex;
-    justify-content: top;
-    align-items: top;
+    justify-content: center;
+    align-items: center;
     height: 8px;
-    aspect-ratio: 1/10;
+    aspect-ratio: 1 / 1;
     border-radius: 50%;
     pointer-events: none;
-    position:absolute;
+    position: absolute;
     z-index: 4;
     top: calc(var(--pad) * 2);
     right: calc(50% - calc(var(--notch-width) * 0.5));
     margin-right: calc(var(--pad) * 0.333);
-    margin-top: 0.cm;
 }
 
-.camera::before{
+.camera::before {
     content: "";
-    height: 33.33%;
-    aspect-ratio: 1;
+    height: 100%;
+    width: 100%;
     border-radius: inherit;
     box-shadow: inset 0 0 0.25em #4c4da3;
-    background: radial-gradient(#6667ac, transparent 50%) no-repeat 33.3% 10%/75% 50%, radial-gradient(#454680, transparent 50%) no-repeat 60% 85%/50% 50%;
+    background:
+        radial-gradient(#6667ac, transparent 50%) no-repeat 33.3% 10% / 75% 50%,
+        radial-gradient(#454680, transparent 50%) no-repeat 60%  85% / 50% 50%;
     background-color: #080928;
 }
 
-.pallete{
-    display:flex;
+/* ─── Palette / Swatches ─────────────────────────────────────────────────── */
+.pallette {
+    display: flex;
     gap: 2em;
     margin-bottom: -0.25em;
 }
 
-input[type=radio]{
+input[type=radio] {
     display: none;
 }
 
-.swatch{
-    --swatch-size: 5em ;
-    background: white;
+.swatch {
+    --swatch-size: 5em;
     width: var(--swatch-size);
     height: var(--swatch-size);
-    border-radius:  50%;
+    border-radius: 50%;
     position: relative;
-    cursor: pointer ;
+    cursor: pointer;
     border: var(--border-width) solid black;
     box-sizing: border-box;
-    transition: 0.333s var(--ease-out);
-    transition-property: border-color , transform ;
+    transition:
+        border-color 0.333s var(--ease-out),
+        transform 0.333s var(--ease-out);
     background: radial-gradient(100% 100% at 50% 30%, var(--swatch-s1), var(--swatch-s2));
     opacity: 0;
     transform: translate3d(0, 20%, 0) scale3d(0.75, 0.75, 1);
-    -webkit-animation: appear 0.333s var(--ease-out) forwads 0.75s;
-    animation: appear 0.333s var(--ease-out) forwads 0.75s;
+    animation: appear 0.333s var(--ease-out) forwards 0.75s;
 }
 
-.swatch:nth-child(1){
-    transform-origin: 80% 200%;
+.swatch:hover {
+    transform: scale3d(1.1, 1.1, 1);
 }
 
-.swatch:nth-child(2){
-    -webkit-animation-delay: 0.8s;
-    animation-delay: 0.8s;
-    transform-origin: 60% 200%;
-}
+.swatch:nth-child(1) { animation-delay: 0.75s; }
+.swatch:nth-child(2) { animation-delay: 0.80s; }
+.swatch:nth-child(3) { animation-delay: 0.85s; }
+.swatch:nth-child(4) { animation-delay: 0.90s; }
 
-.swatch:nth-child(3){
-    -webkit-animation-delay: 0.85s;
-    animation-delay: 0.85s;
-    transform-origin: 40% 200%;
-}
-
-.swatch:nth-child(4){
-    -webkit-animation-delay: 0.9s;
-    animation-delay: 0.9s;
-    transform-origin: 20% 200%;
-}
-
-.swatch::before{
+.swatch::before {
     content: "";
     position: absolute;
     inset: -1px;
     border-radius: inherit;
-    border: var(--border-width) solid black ;
-    background-image: radial-gradient(400% 300% at 50% 225%) , transparent 20% , white; 
+    border: var(--border-width) solid black;
+    background-image: radial-gradient(400% 300% at 50% 225%, transparent 20%, white);
 }
 
-.swatch[for=deep-purple]{
+/* Swatch colour definitions */
+.swatch[for=deep-purple] {
     --swatch-s1: hsl(var(--deep-purple), 100%, 50%);
-    --swatch-s2: hsl(calc(var(--deep-purple) - 60) , 100%, 20%);
+    --swatch-s2: hsl(calc(var(--deep-purple) - 60), 100%, 20%);
+}
+.swatch[for=deep-purple]::before { opacity: 0.5; }
+
+.swatch[for=gold] {
+    --swatch-s1: hsl(var(--gold), 100%, 60%);
+    --swatch-s2: hsl(var(--gold), 100%, 30%);
 }
 
-.swatch[for=deep-purple]:before{
-    opacity: 0.5;
+.swatch[for=space-black] {
+    --swatch-s1: hsl(var(--space-black), 50%, 20%);
+    --swatch-s2: hsl(var(--space-black), 50%, 10%);
 }
+.swatch[for=space-black]::before { opacity: 0.5; }
 
-.swatch[for=gold]{
-    --swatch-s1: hsl(var(--gold), 100% 50%);
-    --swatch-s2: hsl(var(--gold) 100% 50%);
+.swatch[for=silver] {
+    --swatch-s1: hsl(var(--silver), 30%, 85%);
+    --swatch-s2: hsl(var(--silver), 20%, 50%);
 }
+.swatch[for=silver]::before { opacity: 0.75; }
 
-.swatch[for=space-black]{
-    --swatch-s1: hsl(var(--space-black), 50% 20%);
-    --swatch-s2: hsl(var(--space-black), 50% 10%);
-}
-
-.swatch[for=space-black]:before{
-    opacity: 0.5;
-}
-
-.swatch[for=silver]{
-    --swatch-s1: hsl(var(--silver), 50% 80%);
-    --swatch-s2: hsl(var(--silver), 50% 10% );
-}
-
-swatch[for=silver]:before{
-    opacity: 0.75;
-}
-
-.deep-purple{
-    --c-h: var(deep-purple);
+/* ─── Theme Layers ───────────────────────────────────────────────────────── */
+.bg .deep-purple {
+    --g-h: var(--deep-purple);
+    --g-s: 100%;
+    --g-l: 30%;
     --g-hue-adjust: -60;
 }
 
-.gold{
-    --c-h: var(gold);
+.bg .gold {
+    --g-h: var(--gold);
+    --g-s: 100%;
+    --g-l: 40%;
     --g-hue-adjust-2: -100;
 }
 
-.space-black{
-    --c-h: var(--space-black);
-    --g-hue-adjust:190;
-    --g--hue-adjust-2: 145;
-    --g-lightness:95%;
+.bg .space-black {
+    --g-h: var(--space-black);
+    --g-s: 50%;
+    --g-l: 15%;
+    --g-hue-adjust: 190;
+    --g-hue-adjust-2: 145;
+    --g-lightness: 95%;
 }
 
-.silver{
-    --c-s: var(--silver);
-    --c-s:10%;
-    --g--hue-adjust-2: 30%;
-    --g-lightness:95%;
+.bg .silver {
+    --g-h: var(--silver);
+    --g-s: 10%;
+    --g-l: 60%;
+    --g-hue-adjust-2: 30;
+    --g-lightness: 95%;
 }
 
-.silver.glow{
-    opacity:0.25;
+.bg .silver .glow {
+    opacity: 0.25;
 }
 
-#deep-purple:checked~.phone .bg .deep-purple{
-    opacity:1;
+/* ─── Theme Radio Selectors ──────────────────────────────────────────────── */
+
+/* Deep Purple */
+#deep-purple:checked ~ .phone .bg .deep-purple {
+    opacity: 1;
     z-index: 1;
     transition-delay: 0s;
 }
-
-#deep-purple:checked~.phone .bg .deep-purple .section::before{
+#deep-purple:checked ~ .phone .bg .deep-purple .section::before {
     transition-delay: 0s;
-    animation: test 1s infinite alternate-reverse;
+    animation: ambientPulse 3s ease-in-out infinite alternate-reverse;
 }
-
-#deep-purple:checked~.pallette label[for=deep-purple]{
+#deep-purple:checked ~ .phone {
+    --c-h: var(--deep-purple);
+}
+#deep-purple:checked ~ .pallette label[for=deep-purple] {
     border-color: hsl(var(--deep-purple), 50%, 75%);
 }
 
-#gold:checked~.phone .bg .gold{
+/* Gold */
+#gold:checked ~ .phone .bg .gold {
     opacity: 1;
     z-index: 1;
     transition-delay: 0s;
 }
-
-#gold:checked~.phone .bg .gold .section::before{
+#gold:checked ~ .phone .bg .gold .section::before {
     transition-delay: 0s;
-    transform: scale3d(1, 1, 1) translate3d(0, 0, 0);
-    animation: test 1s infinite alternate-reverse;
+    animation: ambientPulse 3s ease-in-out infinite alternate-reverse;
 }
-
-#gold:checked~.pallette label[for=gold]{
+#gold:checked ~ .phone {
+    --c-h: var(--gold);
+}
+#gold:checked ~ .pallette label[for=gold] {
     border-color: hsl(var(--gold), 50%, 75%);
 }
 
-#space-black:checked~.phone .bg .space-black{
+/* Space Black */
+#space-black:checked ~ .phone .bg .space-black {
     opacity: 1;
     z-index: 1;
     transition-delay: 0s;
 }
-
-#space-black:checked~.phone .bg .space-black .section::before{
+#space-black:checked ~ .phone .bg .space-black .section::before {
     transition-delay: 0s;
-    transform: scale3d(1, 1, 1) translate3d(0, 0, 0);
-    animation: test 1s infinite alternate-reverse;    
+    animation: ambientPulse 3s ease-in-out infinite alternate-reverse;
 }
-
-#space-black:checked~.pallette label[for=space-black]{
+#space-black:checked ~ .phone {
+    --c-h: var(--space-black);
+}
+#space-black:checked ~ .pallette label[for=space-black] {
     border-color: hsl(var(--space-black), 50%, 75%);
 }
 
-#silver:checked~.phone .bg .space-black{
+/* Silver */
+#silver:checked ~ .phone .bg .silver {
     opacity: 1;
     z-index: 1;
     transition-delay: 0s;
 }
-
-#silver:checked~.phone .bg .silver .section::before{
+#silver:checked ~ .phone .bg .silver .section::before {
     transition-delay: 0s;
-    transform: scale3d(1, 1, 1) translate3d(0, 0, 0);
-    animation: test 1s infinite alternate-reverse;    
+    animation: ambientPulse 3s ease-in-out infinite alternate-reverse;
 }
-
-#silver:checked~.pallette label[for=silver]{
+#silver:checked ~ .phone {
+    --c-h: var(--silver);
+}
+#silver:checked ~ .pallette label[for=silver] {
     border-color: hsl(var(--silver), 50%, 75%);
-}
-
-@keyframes test{
-    from{
-        transform: scale3d(1, 1, 1) translate3d(0, 0, 0);
-    }
-    to{
-        transform: scale3d(2, 2, 2) translate3d(50px, 50px, 50px);
-    }
 }
