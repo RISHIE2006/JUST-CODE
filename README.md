@@ -3,6 +3,9 @@
 > **A pixel-perfect iPhone-style phone mockup built entirely with HTML & CSS — no JavaScript.**  
 > Features a hover-activated Dynamic Island music player, animated gradient screen backgrounds, and a 4-colour theme switcher.
 
+![Project Screenshot](assets/screenshot.png)
+*A sleek, modern web page layout featuring vibrant colors, dark mode, glassmorphism, and dynamic animations.*
+
 ---
 
 ## 🧠 What is this project?
